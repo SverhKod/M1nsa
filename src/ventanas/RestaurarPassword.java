@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package ventanas;
 
 import java.sql.*;
@@ -124,13 +120,13 @@ public class RestaurarPassword extends javax.swing.JFrame {
         if (!password.equals("") && !confirmacion_password.equals("")) {
             if (password.equals(confirmacion_password)) {
                 try{
-                    Connection cn = Conexion.conectar();
-                    PreparedStatement pst = cn.prepareStatement(
-                        "update usuarios set password = ? where username = '"+user_update+"'");
-                    pst.setString(1, password);
-                    
-                    pst.executeUpdate();
-                    cn.close();
+                    try (Connection cn = Conexion.conectar()) {
+                        PreparedStatement pst = cn.prepareStatement(
+                                "update usuarios set password = ? where username = '"+user_update+"'");
+                        pst.setString(1, password);
+                        
+                        pst.executeUpdate();
+                    }
                     txt_password.setBackground(Color.green);
                     txt_passwordConfirmacion.setBackground(Color.green);
                     
@@ -178,10 +174,8 @@ public class RestaurarPassword extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new RestaurarPassword().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new RestaurarPassword().setVisible(true);
         });
     }
 

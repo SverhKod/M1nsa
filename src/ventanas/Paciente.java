@@ -69,10 +69,8 @@ public class Paciente extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Paciente().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Paciente().setVisible(true);
         });
     }
 

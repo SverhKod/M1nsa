@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package ventanas;
 
 import java.sql.*;
@@ -47,25 +43,25 @@ public class InformacionUsuario extends javax.swing.JFrame {
         jLabel_Titulo.setText("Informacion del usuario " + user_update);
         
         try{
-            Connection cn = Conexion.conectar();
-            PreparedStatement pst = cn.prepareStatement(
-                    "select * from usuarios where username = '" + user_update + "'"
-            );
-            ResultSet rs = pst.executeQuery();
-            
-            if(rs.next()){
-                ID = rs.getInt("id_usuario");
+            try (Connection cn = Conexion.conectar()) {
+                PreparedStatement pst = cn.prepareStatement(
+                        "select * from usuarios where username = '" + user_update + "'"
+                );
+                ResultSet rs = pst.executeQuery();
                 
-                txt_nombre.setText(rs.getString("nombre_usuario"));
-                txt_mail.setText(rs.getString("email"));
-                txt_telefono.setText(rs.getString("telefono"));
-                txt_username.setText(rs.getString("username"));
-                txt_RegistradoPor.setText(rs.getString("registrado_por"));
-                
-                cmb_niveles.setSelectedItem(rs.getString("tipo_nivel"));
-                cmb_estatus.setSelectedItem(rs.getString("estatus"));
+                if(rs.next()){
+                    ID = rs.getInt("id_usuario");
+                    
+                    txt_nombre.setText(rs.getString("nombre_usuario"));
+                    txt_mail.setText(rs.getString("email"));
+                    txt_telefono.setText(rs.getString("telefono"));
+                    txt_username.setText(rs.getString("username"));
+                    txt_RegistradoPor.setText(rs.getString("registrado_por"));
+                    
+                    cmb_niveles.setSelectedItem(rs.getString("tipo_nivel"));
+                    cmb_estatus.setSelectedItem(rs.getString("estatus"));
+                }
             }
-            cn.close();
         }catch(SQLException e){
             System.err.println("Error en cargar usuario" + e );
             JOptionPane.showMessageDialog(null, "Error al cargar, contacte al administrador");
@@ -287,18 +283,18 @@ public class InformacionUsuario extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "Nombre de usuario no disponible");
                     cn.close();
                 }else{
-                    Connection cn2 = Conexion.conectar();
-                    PreparedStatement pst2 = cn2.prepareStatement(
-                    "update usuarios set nombre_usuario=?, email=?, telefono=?, username=?, tipo_nivel=?, estatus=? "
-                            + "where id_usuario = '" + ID + "'");
-                    pst2.setString(1, nombre);
-                    pst2.setString(2, mail);
-                    pst2.setString(3, telefono);
-                    pst2.setString(4, username);
-                    pst2.setString(5, permisos_string);
-                    pst2.setString(6, estatus_string);
-                    pst2.executeUpdate();
-                    cn2.close();
+                    try (Connection cn2 = Conexion.conectar()) {
+                        PreparedStatement pst2 = cn2.prepareStatement(
+                                "update usuarios set nombre_usuario=?, email=?, telefono=?, username=?, tipo_nivel=?, estatus=? "
+                                        + "where id_usuario = '" + ID + "'");
+                        pst2.setString(1, nombre);
+                        pst2.setString(2, mail);
+                        pst2.setString(3, telefono);
+                        pst2.setString(4, username);
+                        pst2.setString(5, permisos_string);
+                        pst2.setString(6, estatus_string);
+                        pst2.executeUpdate();
+                    }
                     
                     JOptionPane.showMessageDialog(null, "Modificacion Correcta");
                 }
@@ -332,22 +328,16 @@ public class InformacionUsuario extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(InformacionUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(InformacionUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(InformacionUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(InformacionUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        
+        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new InformacionUsuario().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new InformacionUsuario().setVisible(true);
         });
     }
 

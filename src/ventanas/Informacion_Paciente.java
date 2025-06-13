@@ -61,49 +61,47 @@ public class Informacion_Paciente extends javax.swing.JFrame {
         this.repaint();
         
         try {
-            Connection cn = Conexion.conectar();
-            PreparedStatement pst = cn.prepareStatement(
-                    "select * from pacientes where id_paciente = '" + IDpaciente_update + "'");
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                setTitle("Informacion del paciente "+ rs.getString("nombre") + " - Sesión de " + user);
-                jLabel_Titulo.setText("Informacion del paciente "+rs.getString("nombre"));
-                
-                txt_nombre.setText(rs.getString("nombre"));
-                txt_mail.setText(rs.getString("email"));
-                txt_telefono.setText(rs.getString("telefono"));
-                txt_direccion.setText(rs.getString("direccion"));
-                txt_ultimaModificacion.setText(rs.getString("ultima_modificacion"));
+            try (Connection cn = Conexion.conectar()) {
+                PreparedStatement pst = cn.prepareStatement(
+                        "select * from pacientes where id_paciente = '" + IDpaciente_update + "'");
+                ResultSet rs = pst.executeQuery();
+                if (rs.next()) {
+                    setTitle("Informacion del paciente "+ rs.getString("nombre") + " - Sesión de " + user);
+                    jLabel_Titulo.setText("Informacion del paciente "+rs.getString("nombre"));
+                    
+                    txt_nombre.setText(rs.getString("nombre"));
+                    txt_mail.setText(rs.getString("email"));
+                    txt_telefono.setText(rs.getString("telefono"));
+                    txt_direccion.setText(rs.getString("direccion"));
+                    txt_ultimaModificacion.setText(rs.getString("ultima_modificacion"));
+                }
             }
-            
-            cn.close();
         } catch (SQLException e) {
             System.err.println("Error en cargar el usuario" + e);
             JOptionPane.showMessageDialog(null, "Error al cargar, contacte al administrador");
         }
         
         try {
-            Connection cn = Conexion.conectar();
-            PreparedStatement pst = cn.prepareStatement(
-                "select id_atencion, fecha, cantidad from atenciones where id_paciente = '" + IDpaciente_update +"'");
-            ResultSet rs = pst.executeQuery();
-            
-            jTable_citas = new JTable(model);
-            jScrollPane_citas.setViewportView(jTable_citas);
-            
-            model.addColumn("ID cita");
-            model.addColumn("Fecha");
-            model.addColumn("Cantidad");
-            
-            while (rs.next()) {
-               Object[] fila = new Object[3];
-                for (int i = 0; i < 3; i++) {
-                    fila[i] = rs.getObject(i);
+            try (Connection cn = Conexion.conectar()) {
+                PreparedStatement pst = cn.prepareStatement(
+                        "select id_atencion, fecha, cantidad from atenciones where id_paciente = '" + IDpaciente_update +"'");
+                ResultSet rs = pst.executeQuery();
+                
+                jTable_citas = new JTable(model);
+                jScrollPane_citas.setViewportView(jTable_citas);
+                
+                model.addColumn("ID cita");
+                model.addColumn("Fecha");
+                model.addColumn("Cantidad");
+                
+                while (rs.next()) {
+                    Object[] fila = new Object[3];
+                    for (int i = 0; i < 3; i++) {
+                        fila[i] = rs.getObject(i);
+                    }
+                    model.addRow(fila);
                 }
-                model.addRow(fila);
             }
-            
-            cn.close();
             
         } catch (SQLException e) {
             System.err.println("Error en el llenado de la tabla citas");
@@ -117,8 +115,8 @@ public class Informacion_Paciente extends javax.swing.JFrame {
                 
                 if (fila_point > -1) {
                     IDcita = (int)model.getValueAt(fila_point, columna_point);
-                    Informacion_Paciente informacion_Paciente = new Informacion_Paciente();
-                    informacion_Paciente.setVisible(true);
+                    Informacion_Paciente informacionPaciente = new Informacion_Paciente();
+                    informacionPaciente.setVisible(true);
                 }
             }
         });
@@ -339,10 +337,8 @@ public class Informacion_Paciente extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Informacion_Paciente().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Informacion_Paciente().setVisible(true);
         });
     }
 

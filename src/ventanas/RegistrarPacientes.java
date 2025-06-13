@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package ventanas;
 
 import java.sql.*;
@@ -176,39 +172,42 @@ public class RegistrarPacientes extends javax.swing.JFrame {
         }
         
         if (validacion == 0) {
-            try{
-                Connection cn = Conexion.conectar();
-                PreparedStatement pst = cn.prepareStatement(
-                    "insert into pacientes values (?,?,?,?,?,?)");
-                pst.setInt(1, 0);
-                pst.setString(2, nombre);
-                pst.setString(3, mail);
-                pst.setString(4, telefono);
-                pst.setString(5, direccion);
-                pst.setString(6, user);
-                
-                pst.executeUpdate();
-                cn.close();
-                
-                Limpiar();
-                
-                txt_nombre.setBackground(Color.green);
-                txt_mail.setBackground(Color.green);
-                txt_telefono.setBackground(Color.green);
-                txt_direccion.setBackground(Color.green);
-                
-                JOptionPane.showMessageDialog(null, "Registro exitoso");
-                this.dispose();
-                
-            }catch(SQLException e){
-                System.out.println("Error en registrar paciente"+e);
-                JOptionPane.showMessageDialog(null, "Error al registrar cliente, contacte con el administrador");
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Debes llenar todos los campos");
+    try {
+        String sql = "INSERT INTO pacientes (nombre, email, telefono, direccion, ultima_modificacion) VALUES (?, ?, ?, ?, ?)";
+        
+        try (Connection cn = Conexion.conectar()) {
+            PreparedStatement pst = cn.prepareStatement(sql);
+
+            // Creamos un objeto Timestamp con la fecha y hora actuales
+            java.sql.Timestamp timestamp = new java.sql.Timestamp(new java.util.Date().getTime());
+
+            pst.setString(1, nombre);
+            pst.setString(2, mail);
+            pst.setString(3, telefono);
+            pst.setString(4, direccion);
+            // Usamos setTimestamp para enviar la fecha y hora a la base de datos
+            pst.setTimestamp(5, timestamp);
+
+            pst.executeUpdate();
         }
-        
-        
+
+        Limpiar();
+        // ... el resto de tu código para limpiar y mostrar el mensaje de éxito ...
+        txt_nombre.setBackground(Color.green);
+        txt_mail.setBackground(Color.green);
+        txt_telefono.setBackground(Color.green);
+        txt_direccion.setBackground(Color.green);
+
+        JOptionPane.showMessageDialog(null, "Registro exitoso.");
+        this.dispose();
+
+    } catch (SQLException e) {
+        System.err.println("Error en registrar paciente: " + e);
+        JOptionPane.showMessageDialog(null, "¡Error al registrar paciente! Contacte al administrador.");
+    }
+} else {
+    JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");
+}
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -237,12 +236,9 @@ public class RegistrarPacientes extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(RegistrarPacientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new RegistrarPacientes().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new RegistrarPacientes().setVisible(true);
         });
     }
 

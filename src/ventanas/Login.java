@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
 package ventanas;
 
 import java.awt.Image;
@@ -211,7 +215,9 @@ public class Login extends javax.swing.JFrame {
         });
         getContentPane().add(chkRecordarContraseña, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 508, 210, 20));
 
+        btnPoliticaPrivacidad.setBackground(new java.awt.Color(255, 255, 255));
         btnPoliticaPrivacidad.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        btnPoliticaPrivacidad.setForeground(new java.awt.Color(0, 0, 0));
         btnPoliticaPrivacidad.setText("Politica Privacidad");
         btnPoliticaPrivacidad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -267,9 +273,8 @@ public class Login extends javax.swing.JFrame {
                     } else if (tipo_nivel.equalsIgnoreCase("Obstetra") && estatus.equalsIgnoreCase("Activo")) {
                         dispose();
                         new Obstetra().setVisible(true);
-                    } else if (tipo_nivel.equalsIgnoreCase("Paciente") && estatus.equalsIgnoreCase("Activo")) {
-                        dispose();
-                        new Paciente().setVisible(true);
+                    } else{
+                        JOptionPane.showMessageDialog(null, "Usuario inactivo");
                     }
 
                     //Si la casilla "Recordar contraseña" está seleccionada, guardar los datos
@@ -314,15 +319,12 @@ public class Login extends javax.swing.JFrame {
     private void btnPoliticaPrivacidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPoliticaPrivacidadActionPerformed
         // TODO add your handling code here:
         // Crear el mensaje de la política de privacidad
-        String politicaPrivacidad = """
-                                    Pol\u00edtica de Privacidad
-                                    
-                                    1. Recopilamos tu nombre de usuario y contrase\u00f1a para proporcionarte acceso seguro a la aplicaci\u00f3n.
-                                    2. Tu contrase\u00f1a es almacenada de forma segura y no es accesible a terceros.
-                                    3. No compartimos tu informaci\u00f3n personal con ninguna entidad externa.
-                                    4. Tienes derecho a eliminar o modificar tus datos de acceso en cualquier momento.
-                                    
-                                    Al usar esta aplicaci\u00f3n, aceptas nuestra pol\u00edtica de privacidad.""";
+        String politicaPrivacidad = "Política de Privacidad\n\n"
+                + "1. Recopilamos tu nombre de usuario y contraseña para proporcionarte acceso seguro a la aplicación.\n"
+                + "2. Tu contraseña es almacenada de forma segura y no es accesible a terceros.\n"
+                + "3. No compartimos tu información personal con ninguna entidad externa.\n"
+                + "4. Tienes derecho a eliminar o modificar tus datos de acceso en cualquier momento.\n\n"
+                + "Al usar esta aplicación, aceptas nuestra política de privacidad.";
 
         // Mostrar el mensaje en un cuadro de diálogo
         JOptionPane.showMessageDialog(this, politicaPrivacidad, "Política de Privacidad", JOptionPane.INFORMATION_MESSAGE);
@@ -356,8 +358,10 @@ public class Login extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new Login().setVisible(true);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Login().setVisible(true);
+            }
         });
     }
 

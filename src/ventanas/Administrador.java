@@ -26,6 +26,7 @@ public class Administrador extends javax.swing.JFrame {
      */
     public Administrador() {
         initComponents();
+        
         user = Login.user;
         sesion_usuario = 1;
         
@@ -50,7 +51,7 @@ public class Administrador extends javax.swing.JFrame {
             ResultSet rs = pst.executeQuery();
             if(rs.next()){
              nombre_usuario = rs.getString("nombre_usuario");
-             jLabel_NombreUsuario.setText(nombre_usuario);
+             jLabel_NombreUsuario.setText("Bienvenido " + nombre_usuario);
             }
         }catch(Exception e){
             System.err.println("Error en conexion desde la interfaz administrador");
@@ -75,17 +76,17 @@ public class Administrador extends javax.swing.JFrame {
         jLabel_NombreUsuario = new javax.swing.JLabel();
         jButton_RegistrarUsuario = new javax.swing.JButton();
         jButton_GestionarUsuarios = new javax.swing.JButton();
-        jButton_Creatividad = new javax.swing.JButton();
         jButton_Obstetra = new javax.swing.JButton();
-        jButton_Paciente = new javax.swing.JButton();
-        jButton_AcercaDe = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jButton_GestionarMetas = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        jButton_AsignarMeta = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        jButton_CrearMetas = new javax.swing.JButton();
+        jLabel10 = new javax.swing.JLabel();
         jLabel_Wallpaper = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -94,7 +95,7 @@ public class Administrador extends javax.swing.JFrame {
 
         jLabel_NombreUsuario.setFont(new java.awt.Font("Dubai Medium", 1, 20)); // NOI18N
         jLabel_NombreUsuario.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel_NombreUsuario.setText("ADMIN");
+        jLabel_NombreUsuario.setText(" ");
         getContentPane().add(jLabel_NombreUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         jButton_RegistrarUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/addUser.png"))); // NOI18N
@@ -113,22 +114,13 @@ public class Administrador extends javax.swing.JFrame {
         });
         getContentPane().add(jButton_GestionarUsuarios, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 70, 120, 100));
 
-        jButton_Creatividad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/creatividad.png"))); // NOI18N
-        getContentPane().add(jButton_Creatividad, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 70, 120, 100));
-
         jButton_Obstetra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/capturista.png"))); // NOI18N
         jButton_Obstetra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_ObstetraActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_Obstetra, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 120, 100));
-
-        jButton_Paciente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/tecnico.png"))); // NOI18N
-        getContentPane().add(jButton_Paciente, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 240, 120, 100));
-
-        jButton_AcercaDe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/geekipedia.png"))); // NOI18N
-        getContentPane().add(jButton_AcercaDe, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 240, 120, 100));
+        getContentPane().add(jButton_Obstetra, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 70, 120, 100));
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Registrar Usuario");
@@ -138,26 +130,50 @@ public class Administrador extends javax.swing.JFrame {
         jLabel2.setText("Gestionar Usuarios");
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 170, -1, -1));
 
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Creatividad");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 170, -1, -1));
-
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Panel vista Obstetra");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 340, -1, -1));
-
-        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel5.setText("Panel Vista Paciente");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 340, -1, -1));
-
-        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel6.setText("Acerca de");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 340, -1, -1));
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 170, -1, -1));
 
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("Creado por Grupo 6 del Curso Integrador: Sistemas I ©");
         getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 370, -1, -1));
-        getContentPane().add(jLabel_Wallpaper, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 650, 430));
+
+        jButton_GestionarMetas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/success_focus.png"))); // NOI18N
+        jButton_GestionarMetas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_GestionarMetasActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton_GestionarMetas, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 120, 100));
+
+        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel8.setText("Crear Meta");
+        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 340, -1, -1));
+
+        jButton_AsignarMeta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/document_add.png"))); // NOI18N
+        jButton_AsignarMeta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_AsignarMetaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton_AsignarMeta, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 240, 120, 100));
+
+        jLabel9.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel9.setText("Asignar Meta");
+        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 340, -1, -1));
+
+        jButton_CrearMetas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/goals.png"))); // NOI18N
+        jButton_CrearMetas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_CrearMetasActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton_CrearMetas, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 240, 120, 100));
+
+        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel10.setText("Gestionar Metas");
+        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 340, -1, -1));
+        getContentPane().add(jLabel_Wallpaper, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 660, 440));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -179,6 +195,22 @@ public class Administrador extends javax.swing.JFrame {
         Obstetra obstetra = new Obstetra();
         obstetra.setVisible(true);
     }//GEN-LAST:event_jButton_ObstetraActionPerformed
+
+    private void jButton_GestionarMetasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_GestionarMetasActionPerformed
+        // TODO add your handling code here:
+        GestionarMetas metas = new GestionarMetas();
+        metas.setVisible(true);
+    }//GEN-LAST:event_jButton_GestionarMetasActionPerformed
+
+    private void jButton_CrearMetasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CrearMetasActionPerformed
+        // TODO add your handling code here:
+        new CrearMeta().setVisible(true);
+    }//GEN-LAST:event_jButton_CrearMetasActionPerformed
+
+    private void jButton_AsignarMetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_AsignarMetaActionPerformed
+        // TODO add your handling code here:
+        new AsignarMeta().setVisible(true);
+    }//GEN-LAST:event_jButton_AsignarMetaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -216,19 +248,19 @@ public class Administrador extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton_AcercaDe;
-    private javax.swing.JButton jButton_Creatividad;
+    private javax.swing.JButton jButton_AsignarMeta;
+    private javax.swing.JButton jButton_CrearMetas;
+    private javax.swing.JButton jButton_GestionarMetas;
     private javax.swing.JButton jButton_GestionarUsuarios;
     private javax.swing.JButton jButton_Obstetra;
-    private javax.swing.JButton jButton_Paciente;
     private javax.swing.JButton jButton_RegistrarUsuario;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLabel_NombreUsuario;
     private javax.swing.JLabel jLabel_Wallpaper;
     // End of variables declaration//GEN-END:variables

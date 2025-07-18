@@ -3,7 +3,20 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/fabia/Downloads/Avance2/Minsa%20System/src/ventanas/Login.java</file>
+            <file>file:/C:/Users/moise/Downloads/Minsa%20System/src/ventanas/Login.java</file>
+            <file>file:/C:/Users/moise/Downloads/Minsa%20System/src/ventanas/Administrador.java</file>
+            <file>file:/C:/Users/moise/Downloads/Minsa%20System/src/ventanas/AsignarMeta.java</file>
+            <file>file:/C:/Users/moise/Downloads/Minsa%20System/src/ventanas/RegistrarUsuarios.java</file>
+            <file>file:/C:/Users/moise/Downloads/Minsa%20System/src/ventanas/RegistrarAvance.java</file>
+            <file>file:/C:/Users/moise/Downloads/Minsa%20System/src/ventanas/Obstetra.java</file>
+            <file>file:/C:/Users/moise/Downloads/Minsa%20System/src/ventanas/GestionarMetas.java</file>
+            <file>file:/C:/Users/moise/Downloads/Minsa%20System/src/clases/MetaDAO.java</file>
+            <file>file:/C:/Users/moise/Downloads/Minsa%20System/src/clases/MetaObstetra.java</file>
+            <file>file:/C:/Users/moise/Downloads/Minsa%20System/src/ventanas/CrearMeta.java</file>
+            <file>file:/C:/Users/moise/Downloads/Minsa%20System/src/ventanas/GestionarPacientes.java</file>
+            <file>file:/C:/Users/moise/Downloads/Minsa%20System/src/ventanas/RegistrarPacientes.java</file>
+            <file>file:/C:/Users/moise/Downloads/Minsa%20System/src/ventanas/RegistrarCita.java</file>
+            <file>file:/C:/Users/moise/Downloads/Minsa%20System/src/ventanas/Informacion_Paciente.java</file>
         </group>
     </open-files>
 </project-private>

@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
 package ventanas;
 
 import java.sql.*;
@@ -93,6 +97,11 @@ public class RestaurarPassword extends javax.swing.JFrame {
         txt_passwordConfirmacion.setForeground(new java.awt.Color(255, 255, 255));
         txt_passwordConfirmacion.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txt_passwordConfirmacion.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        txt_passwordConfirmacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_passwordConfirmacionActionPerformed(evt);
+            }
+        });
         getContentPane().add(txt_passwordConfirmacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 210, -1));
 
         jButton_RestaurarPassword.setBackground(new java.awt.Color(255, 102, 102));
@@ -120,13 +129,13 @@ public class RestaurarPassword extends javax.swing.JFrame {
         if (!password.equals("") && !confirmacion_password.equals("")) {
             if (password.equals(confirmacion_password)) {
                 try{
-                    try (Connection cn = Conexion.conectar()) {
-                        PreparedStatement pst = cn.prepareStatement(
-                                "update usuarios set password = ? where username = '"+user_update+"'");
-                        pst.setString(1, password);
-                        
-                        pst.executeUpdate();
-                    }
+                    Connection cn = Conexion.conectar();
+                    PreparedStatement pst = cn.prepareStatement(
+                        "update usuarios set password = ? where username = '"+user_update+"'");
+                    pst.setString(1, password);
+                    
+                    pst.executeUpdate();
+                    cn.close();
                     txt_password.setBackground(Color.green);
                     txt_passwordConfirmacion.setBackground(Color.green);
                     
@@ -143,9 +152,17 @@ public class RestaurarPassword extends javax.swing.JFrame {
             txt_password.setBackground(Color.red);
             txt_passwordConfirmacion.setBackground(Color.red);
             JOptionPane.showMessageDialog(null, "No se admiten contraseñas vacias");
+            
         }
     }//GEN-LAST:event_jButton_RestaurarPasswordActionPerformed
 
+    private void txt_passwordConfirmacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_passwordConfirmacionActionPerformed
+        // TODO add your handling code here:
+        txt_passwordConfirmacion.setBackground(Color.white);
+    }//GEN-LAST:event_txt_passwordConfirmacionActionPerformed
+
+ 
+    
     /**
      * @param args the command line arguments
      */
@@ -174,8 +191,10 @@ public class RestaurarPassword extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new RestaurarPassword().setVisible(true);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new RestaurarPassword().setVisible(true);
+            }
         });
     }
 

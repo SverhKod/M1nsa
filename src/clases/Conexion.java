@@ -8,9 +8,9 @@ public class Conexion {
     
    public static Connection conectar() {
         // URL de conexión a la base de datos
-        String url = "jdbc:mysql://yamanote.proxy.rlwy.net:12801/railway";
+        String url = "jdbc:mysql://localhost:3306/minsa_db";
         String usuario = "root";
-        String contraseña = "cMIdOMaKPWfPvIHZlWxcEpIwTWpNxRoi";
+        String contraseña = "123456";
 
         try {
             // Cargar el driver JDBC

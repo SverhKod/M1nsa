@@ -16,10 +16,13 @@ import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -61,50 +64,52 @@ public class Informacion_Paciente extends javax.swing.JFrame {
         this.repaint();
         
         try {
-            try (Connection cn = Conexion.conectar()) {
-                PreparedStatement pst = cn.prepareStatement(
-                        "select * from pacientes where id_paciente = '" + IDpaciente_update + "'");
-                ResultSet rs = pst.executeQuery();
-                if (rs.next()) {
-                    setTitle("Informacion del paciente "+ rs.getString("nombre") + " - Sesión de " + user);
-                    jLabel_Titulo.setText("Informacion del paciente "+rs.getString("nombre"));
-                    
-                    txt_nombre.setText(rs.getString("nombre"));
-                    txt_mail.setText(rs.getString("email"));
-                    txt_telefono.setText(rs.getString("telefono"));
-                    txt_direccion.setText(rs.getString("direccion"));
-                    txt_ultimaModificacion.setText(rs.getString("ultima_modificacion"));
-                }
+            Connection cn = Conexion.conectar();
+            PreparedStatement pst = cn.prepareStatement(
+                    "select * from pacientes where id_paciente = '" + IDpaciente_update + "'");
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                setTitle("Informacion del paciente "+ rs.getString("nombre") + " - Sesión de " + user);
+                jLabel_Titulo.setText("Informacion del paciente "+rs.getString("nombre"));
+                
+                txt_nombre.setText(rs.getString("nombre"));
+                txt_mail.setText(rs.getString("email"));
+                txt_telefono.setText(rs.getString("telefono"));
+                txt_direccion.setText(rs.getString("direccion"));
+                txt_ultimaModificacion.setText(rs.getString("ultima_modificacion"));
             }
+            
+            cn.close();
         } catch (SQLException e) {
             System.err.println("Error en cargar el usuario" + e);
             JOptionPane.showMessageDialog(null, "Error al cargar, contacte al administrador");
         }
         
         try {
-            try (Connection cn = Conexion.conectar()) {
-                PreparedStatement pst = cn.prepareStatement(
-                        "select id_atencion, fecha, cantidad from atenciones where id_paciente = '" + IDpaciente_update +"'");
-                ResultSet rs = pst.executeQuery();
-                
-                jTable_citas = new JTable(model);
-                jScrollPane_citas.setViewportView(jTable_citas);
-                
-                model.addColumn("ID cita");
-                model.addColumn("Fecha");
-                model.addColumn("Cantidad");
-                
-                while (rs.next()) {
-                    Object[] fila = new Object[3];
-                    for (int i = 0; i < 3; i++) {
-                        fila[i] = rs.getObject(i);
-                    }
-                    model.addRow(fila);
+            Connection cn = Conexion.conectar();
+            PreparedStatement pst = cn.prepareStatement(
+                "select id_cita, fecha, obstetra from cita where id_paciente = '" + IDpaciente_update +"'");
+            ResultSet rs = pst.executeQuery();
+            
+            jTable_citas = new JTable(model);
+            jScrollPane_citas.setViewportView(jTable_citas);
+            
+            model.addColumn("ID cita");
+            model.addColumn("Fecha");
+            model.addColumn("Obstetra");
+            
+            while (rs.next()) {
+               Object[] fila = new Object[3];
+                for (int i = 0; i < 3; i++) {
+                    fila[i] = rs.getObject(i + 1);
                 }
+                model.addRow(fila);
             }
             
+            cn.close();
+            
         } catch (SQLException e) {
-            System.err.println("Error en el llenado de la tabla citas");
+            System.err.println("Error en el llenado de la tabla citas" + e);
         }
         
         jTable_citas.addMouseListener(new MouseAdapter(){
@@ -115,8 +120,8 @@ public class Informacion_Paciente extends javax.swing.JFrame {
                 
                 if (fila_point > -1) {
                     IDcita = (int)model.getValueAt(fila_point, columna_point);
-                    Informacion_Paciente informacionPaciente = new Informacion_Paciente();
-                    informacionPaciente.setVisible(true);
+                    Informacion_Paciente informacion_Paciente = new Informacion_Paciente();
+                    informacion_Paciente.setVisible(true);
                 }
             }
         });
@@ -285,6 +290,11 @@ public class Informacion_Paciente extends javax.swing.JFrame {
         getContentPane().add(jButton_Actualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 310, 210, 35));
 
         jButton_ImprimirReporte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/impresora.png"))); // NOI18N
+        jButton_ImprimirReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_ImprimirReporteActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton_ImprimirReporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 250, 120, 100));
 
         jLabel_footer.setForeground(new java.awt.Color(255, 255, 255));
@@ -301,13 +311,160 @@ public class Informacion_Paciente extends javax.swing.JFrame {
 
     private void jButton_RegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RegistrarActionPerformed
         // TODO add your handling code here:
+        RegistrarCita registrarCita = new RegistrarCita();
+        registrarCita.setVisible(true);
     }//GEN-LAST:event_jButton_RegistrarActionPerformed
 
     private void jButton_ActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ActualizarActionPerformed
         // TODO add your handling code here:
-        RestaurarPassword restaurarPassword = new RestaurarPassword();
-        restaurarPassword.setVisible(true);
+        int validacion = 0;
+        String nombre, mail, telefono, direccion;
+        nombre = txt_nombre.getText().trim();
+        mail = txt_mail.getText().trim();
+        telefono = txt_telefono.getText().trim();
+        direccion = txt_direccion.getText().trim();
+        
+        if(nombre.equals("")){
+            txt_nombre.setBackground(Color.red);
+            validacion++;
+        }
+        if(mail.equals("")){
+            txt_mail.setBackground(Color.red);
+            validacion++;
+        }
+        if(telefono.equals("")){
+            txt_telefono.setBackground(Color.red);
+            validacion++;
+        }
+        if(direccion.equals("")){
+            txt_direccion.setBackground(Color.red);
+            validacion++;
+        }
+        
+        if (validacion == 0) {
+            try {
+                Connection cn = Conexion.conectar();
+                PreparedStatement pst = cn.prepareStatement(
+                        "update pacientes set nombre=?, email = ?,  telefono=?, direccion=?, ultima_modificacion=?" + " where id_paciente = '" + IDPaciente_update + "'"
+                );
+                pst.setString(1, nombre);
+                pst.setString(2, mail);
+                pst.setString(3, telefono);
+                pst.setString(4, direccion);
+                pst.setString(5, user);
+                
+                pst.executeUpdate();
+                cn.close();
+                
+                Limpiar();
+                
+                txt_nombre.setBackground(Color.green);
+                txt_mail.setBackground(Color.green);
+                txt_telefono.setBackground(Color.green);
+                txt_direccion.setBackground(Color.green);
+                txt_ultimaModificacion.setText(user);
+                JOptionPane.showMessageDialog(null, "Actualizacion correcta");
+                this.dispose();
+            } catch (SQLException e) {
+                System.err.println("Error en actualizar paciente");
+                JOptionPane.showMessageDialog(null, "Error al actualizar paciente");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Debes de llenar todos los campos");
+        }
     }//GEN-LAST:event_jButton_ActualizarActionPerformed
+
+    private void jButton_ImprimirReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ImprimirReporteActionPerformed
+        // TODO add your handling code here:
+        Document document = new Document();
+        
+        try {
+            String ruta = System.getProperty("user.home");
+            PdfWriter.getInstance(document, new FileOutputStream(ruta + "/Desktop/" + txt_nombre.getText().trim() + ".pdf"));
+            
+            com.itextpdf.text.Image header = com.itextpdf.text.Image.getInstance("src/images/BannerPDF.jpg");
+            header.scaleToFit(650, 1000);
+            header.setAlignment(Chunk.ALIGN_CENTER);
+            
+            Paragraph parrafo = new Paragraph();
+            parrafo.setAlignment(Paragraph.ALIGN_CENTER);
+            parrafo.add("Informacion del paciente. \n \n");
+            parrafo.setFont(FontFactory.getFont("Tahoma", 14, Font.BOLD, BaseColor.DARK_GRAY));
+            
+            document.open();
+            document.add(header);
+            document.add(parrafo);
+            
+            PdfPTable tabla_paciente = new PdfPTable(5);
+            tabla_paciente.addCell("ID");
+            tabla_paciente.addCell("Nombre");
+            tabla_paciente.addCell("Email");
+            tabla_paciente.addCell("Telefono");
+            tabla_paciente.addCell("Direccion");
+            
+            try {
+                Connection cn = Conexion.conectar();
+                PreparedStatement pst = cn.prepareStatement(
+                        "select * from pacientes where id_paciente = '"+IDPaciente_update + "'"
+                );
+                
+                ResultSet rs = pst.executeQuery();
+                if (rs.next()) {
+                    do {                        
+                        tabla_paciente.addCell(rs.getString(1));
+                        tabla_paciente.addCell(rs.getString(2));
+                        tabla_paciente.addCell(rs.getString(3));
+                        tabla_paciente.addCell(rs.getString(4));
+                        tabla_paciente.addCell(rs.getString(5));
+                    } while (rs.next());
+                    
+                    document.add(tabla_paciente);
+                }
+                Paragraph parrafo2 = new Paragraph();
+                parrafo2.setAlignment(Paragraph.ALIGN_CENTER);
+                parrafo2.add("\n \n Citas Registradas \n \n");
+                parrafo2.setFont(FontFactory.getFont("Tahome", 14, Font.BOLD, BaseColor.DARK_GRAY));
+                
+                document.add(parrafo2);
+                PdfPTable tablaCitas = new PdfPTable(4);
+                tablaCitas.addCell("ID Cita");
+                tablaCitas.addCell("ID Paciente");
+                tablaCitas.addCell("Fecha Cita");
+                tablaCitas.addCell("Nombre Obstetra");
+                
+                try {
+                    Connection cn2 = Conexion.conectar();
+                    PreparedStatement pst2 = cn2.prepareStatement(
+                        "select idcita, id_paciente, fecha_cita, nombre_obstetra from cita where id_paciente = '"+IDPaciente_update + "'"
+                    );
+                    ResultSet rs2 = pst2.executeQuery();
+                    
+                    if (rs2.next()) {
+                        do {                        
+                            tablaCitas.addCell(rs2.getString(1));
+                            tablaCitas.addCell(rs2.getString(2));
+                            tablaCitas.addCell(rs2.getString(3));
+                            tablaCitas.addCell(rs2.getString(4));
+                        } while (rs2.next());
+                    
+                        document.add(tablaCitas);
+                    }
+                } catch (SQLException e) {
+                    System.err.println("Error al cargar citas" +e);
+                }
+                        
+            } catch (SQLException e) {
+                System.err.println("Error al obtener datosdels paciente" +e);
+            }
+            
+            document.close();
+            JOptionPane.showMessageDialog(null, "Reporte creado correctamente");
+           
+        } catch (DocumentException | IOException e) {
+            System.err.println("Error en PDF o ruta de imagen" + e);
+            JOptionPane.showMessageDialog(null, "Error al generar pdf, Contacte al administrador");
+        }
+    }//GEN-LAST:event_jButton_ImprimirReporteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -337,8 +494,10 @@ public class Informacion_Paciente extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new Informacion_Paciente().setVisible(true);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Informacion_Paciente().setVisible(true);
+            }
         });
     }
 
@@ -364,4 +523,11 @@ public class Informacion_Paciente extends javax.swing.JFrame {
     private javax.swing.JTextField txt_telefono;
     private javax.swing.JTextField txt_ultimaModificacion;
     // End of variables declaration//GEN-END:variables
+
+    public void Limpiar(){
+        txt_nombre.setText("");
+        txt_direccion.setText("");
+        txt_mail.setText("");
+        txt_telefono.setText("");
+    }
 }

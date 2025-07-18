@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
 package ventanas;
 
 import java.sql.*;
@@ -43,25 +47,25 @@ public class InformacionUsuario extends javax.swing.JFrame {
         jLabel_Titulo.setText("Informacion del usuario " + user_update);
         
         try{
-            try (Connection cn = Conexion.conectar()) {
-                PreparedStatement pst = cn.prepareStatement(
-                        "select * from usuarios where username = '" + user_update + "'"
-                );
-                ResultSet rs = pst.executeQuery();
+            Connection cn = Conexion.conectar();
+            PreparedStatement pst = cn.prepareStatement(
+                    "select * from usuarios where username = '" + user_update + "'"
+            );
+            ResultSet rs = pst.executeQuery();
+            
+            if(rs.next()){
+                ID = rs.getInt("id_usuario");
                 
-                if(rs.next()){
-                    ID = rs.getInt("id_usuario");
-                    
-                    txt_nombre.setText(rs.getString("nombre_usuario"));
-                    txt_mail.setText(rs.getString("email"));
-                    txt_telefono.setText(rs.getString("telefono"));
-                    txt_username.setText(rs.getString("username"));
-                    txt_RegistradoPor.setText(rs.getString("registrado_por"));
-                    
-                    cmb_niveles.setSelectedItem(rs.getString("tipo_nivel"));
-                    cmb_estatus.setSelectedItem(rs.getString("estatus"));
-                }
+                txt_nombre.setText(rs.getString("nombre_usuario"));
+                txt_mail.setText(rs.getString("email"));
+                txt_telefono.setText(rs.getString("telefono"));
+                txt_username.setText(rs.getString("username"));
+                txt_RegistradoPor.setText(rs.getString("registrado_por"));
+                
+                cmb_niveles.setSelectedItem(rs.getString("tipo_nivel"));
+                cmb_estatus.setSelectedItem(rs.getString("estatus"));
             }
+            cn.close();
         }catch(SQLException e){
             System.err.println("Error en cargar usuario" + e );
             JOptionPane.showMessageDialog(null, "Error al cargar, contacte al administrador");
@@ -190,7 +194,7 @@ public class InformacionUsuario extends javax.swing.JFrame {
         cmb_estatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Activo", "Inactivo" }));
         getContentPane().add(cmb_estatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 130, -1, -1));
 
-        cmb_niveles.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrador", "Obstetra", "Paciente" }));
+        cmb_niveles.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrador", "Obstetra" }));
         getContentPane().add(cmb_niveles, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 250, -1, -1));
 
         jButton_Actualizar.setBackground(new java.awt.Color(255, 102, 102));
@@ -283,18 +287,18 @@ public class InformacionUsuario extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "Nombre de usuario no disponible");
                     cn.close();
                 }else{
-                    try (Connection cn2 = Conexion.conectar()) {
-                        PreparedStatement pst2 = cn2.prepareStatement(
-                                "update usuarios set nombre_usuario=?, email=?, telefono=?, username=?, tipo_nivel=?, estatus=? "
-                                        + "where id_usuario = '" + ID + "'");
-                        pst2.setString(1, nombre);
-                        pst2.setString(2, mail);
-                        pst2.setString(3, telefono);
-                        pst2.setString(4, username);
-                        pst2.setString(5, permisos_string);
-                        pst2.setString(6, estatus_string);
-                        pst2.executeUpdate();
-                    }
+                    Connection cn2 = Conexion.conectar();
+                    PreparedStatement pst2 = cn2.prepareStatement(
+                    "update usuarios set nombre_usuario=?, email=?, telefono=?, username=?, tipo_nivel=?, estatus=? "
+                            + "where id_usuario = '" + ID + "'");
+                    pst2.setString(1, nombre);
+                    pst2.setString(2, mail);
+                    pst2.setString(3, telefono);
+                    pst2.setString(4, username);
+                    pst2.setString(5, permisos_string);
+                    pst2.setString(6, estatus_string);
+                    pst2.executeUpdate();
+                    cn2.close();
                     
                     JOptionPane.showMessageDialog(null, "Modificacion Correcta");
                 }
@@ -328,16 +332,22 @@ public class InformacionUsuario extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(InformacionUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(InformacionUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(InformacionUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(InformacionUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
-        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new InformacionUsuario().setVisible(true);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new InformacionUsuario().setVisible(true);
+            }
         });
     }
 
